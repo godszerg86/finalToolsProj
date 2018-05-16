@@ -7,8 +7,9 @@ const babel = require('gulp-babel');
 const htmlreplace = require('gulp-html-replace');
 const uglify = require('gulp-uglify');
 const pump = require('pump');
+const replace = require('gulp-replace');
 
-gulp.task('default', ['css', 'images', 'js']);
+gulp.task('default', ['css', 'images', 'js', 'html']);
 
 
 gulp.task('css', () =>
@@ -33,9 +34,11 @@ gulp.task('js', () => {
     pump([
         gulp.src(['./src/js/resources.js', './src/js/app.js', './src/js/engine.js']),
         babel({
-            presets: ['env']
+            presets: ['env'],
+            plugins: ["transform-remove-strict-mode"]
         }),
         concat('main.js'),
+        replace('src/images/', 'images/'),
         uglify(),
         gulp.dest('./dist/js/')
     ]);
@@ -54,7 +57,8 @@ it replace this three lines:
 gulp.task('html', () => {
     gulp.src('index.html')
         .pipe(htmlreplace({
-            'js': 'js/main.js'
+            'js': 'js/main.js',
+            'css': 'css/style.css'
         }))
         .pipe(gulp.dest('dist/'));
 
@@ -71,3 +75,6 @@ gulp.task('cssMin', () => {
 gulp.task('watchCss', () => {
     gulp.watch('./src/css/style.css', ['cssMin'])
 });
+
+
+
