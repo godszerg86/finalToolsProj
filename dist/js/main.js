@@ -1,10 +1,12 @@
+"use strict";
+
 /* Resources.js
  * This is simply an image loading utility. It eases the process of loading
  * image files so that they can be used within your game. It also includes
  * a simple "caching" layer so it will reuse cached images if you attempt
  * to load the same image multiple times.
  */
-(function() {
+(function () {
     var resourceCache = {};
     var loading = [];
     var readyCallbacks = [];
@@ -14,12 +16,12 @@
      * image. It will then call our private image loading function accordingly.
      */
     function load(urlOrArr) {
-        if(urlOrArr instanceof Array) {
+        if (urlOrArr instanceof Array) {
             /* If the developer passed in an array of images
              * loop through each value and call our image
              * loader on that image file
              */
-            urlOrArr.forEach(function(url) {
+            urlOrArr.forEach(function (url) {
                 _load(url);
             });
         } else {
@@ -35,7 +37,7 @@
      * called by the public image loader function.
      */
     function _load(url) {
-        if(resourceCache[url]) {
+        if (resourceCache[url]) {
             /* If this URL has been previously loaded it will exist within
              * our resourceCache array. Just return that image rather
              * re-loading the image.
@@ -46,7 +48,7 @@
              * within our cache; we'll need to load this image.
              */
             var img = new Image();
-            img.onload = function() {
+            img.onload = function () {
                 /* Once our image has properly loaded, add it to our cache
                  * so that we can simply return this image if the developer
                  * attempts to load this file in the future.
@@ -56,8 +58,10 @@
                 /* Once the image is actually loaded and properly cached,
                  * call all of the onReady() callbacks we have defined.
                  */
-                if(isReady()) {
-                    readyCallbacks.forEach(function(func) { func(); });
+                if (isReady()) {
+                    readyCallbacks.forEach(function (func) {
+                        func();
+                    });
                 }
             };
 
@@ -83,9 +87,8 @@
      */
     function isReady() {
         var ready = true;
-        for(var k in resourceCache) {
-            if(resourceCache.hasOwnProperty(k) &&
-               !resourceCache[k]) {
+        for (var k in resourceCache) {
+            if (resourceCache.hasOwnProperty(k) && !resourceCache[k]) {
                 ready = false;
             }
         }
@@ -109,17 +112,17 @@
         isReady: isReady
     };
 })();
+'use strict';
 
 //global variables
-let level = 1;
-let popsUp = false;
-
+var level = 1;
+var popsUp = false;
 
 // Enemies our player must avoid
-var Enemy = function (x, y, level) {
+var Enemy = function Enemy(x, y, level) {
     this.x = x;
     this.y = y;
-    this.speed = 50 + (Math.random() * level);
+    this.speed = 50 + Math.random() * level;
     this.sprite = 'dist/images/enemy-bug.png';
 };
 
@@ -144,7 +147,7 @@ Enemy.prototype.render = function () {
 // a handleInput() method.
 
 
-const Player = function () {
+var Player = function Player() {
     this.x = 200;
     this.y = 400;
     this.sprite = 'dist/images/char-boy.png';
@@ -154,15 +157,13 @@ const Player = function () {
             this.x += newX;
             this.y += newY;
         }
-
     };
     this.render = function () {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y)
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     };
     this.handleInput = function (keyPressed) {
-        let moveY = 87.5; // row width
-        let moveX = 100;
-
+        var moveY = 87.5; // row width
+        var moveX = 100;
 
         if (keyPressed === 'up') {
             this.update(0, -moveY);
@@ -177,25 +178,20 @@ const Player = function () {
             this.update(moveX, 0);
         };
     };
-
 };
-
 
 // Now instantiate your objects.
 //top bugs
-const bug1 = new Enemy(-101, 50, 100);
+var bug1 = new Enemy(-101, 50, 100);
 // middle line bugs
-const bug2 = new Enemy(-101, 137.5, 100);
+var bug2 = new Enemy(-101, 137.5, 100);
 // bottom line bugs
-const bug3 = new Enemy(-101, 225, 100);
-
-
+var bug3 = new Enemy(-101, 225, 100);
 
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-let allEnemies = [bug1, bug2, bug3];
-const player = new Player();;
-
+var allEnemies = [bug1, bug2, bug3];
+var player = new Player();;
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -211,12 +207,12 @@ document.addEventListener('keyup', function (e) {
 });
 
 // levelUp IIFE, add new bug with a random speed on a line.
-const levelUp = (function () {
-    let levelDifficulty = 200;
-    let x = -101;
-    let y = 225;
-    let counter = 1;
-    return () => {
+var levelUp = function () {
+    var levelDifficulty = 200;
+    var x = -101;
+    var y = 225;
+    var counter = 1;
+    return function () {
         level++;
         document.querySelector('#lvl-count').innerText = level;
         allEnemies.push(new Enemy(x, y, levelDifficulty));
@@ -224,11 +220,11 @@ const levelUp = (function () {
         if (counter === 3) {
             y = 225;
             counter = 1;
-        } else
-            y -= 87.5;
+        } else y -= 87.5;
         counter++;
-    }
-}());
+    };
+}();
+'use strict';
 
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
@@ -245,7 +241,7 @@ const levelUp = (function () {
  * writing app.js a little simpler to work with.
  */
 
-var Engine = (function (global) {
+var Engine = function (global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -320,12 +316,10 @@ var Engine = (function (global) {
             player.x = 200;
             player.y = 400;
         }
-        allEnemies.forEach(element => {
-            if (player.y === element.y && ((player.x >= element.x && player.x <= element.x + 75) || (player.x + 75 >= element.x && player.x + 75 <= element.x + 75))) {
+        allEnemies.forEach(function (element) {
+            if (player.y === element.y && (player.x >= element.x && player.x <= element.x + 75 || player.x + 75 >= element.x && player.x + 75 <= element.x + 75)) {
                 reset();
-
             }
-
         });
     }
     /* This is called by the update function and loops through all of the
@@ -352,20 +346,19 @@ var Engine = (function (global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        var rowImages = [
-                'dist/images/water-block.png', // Top row is water
-                'dist/images/stone-block.png', // Row 1 of 3 of stone
-                'dist/images/stone-block.png', // Row 2 of 3 of stone
-                'dist/images/stone-block.png', // Row 3 of 3 of stone
-                'dist/images/grass-block.png', // Row 1 of 2 of grass
-                'dist/images/grass-block.png', // Row 2 of 2 of grass
-            ],
+        var rowImages = ['dist/images/water-block.png', // Top row is water
+        'dist/images/stone-block.png', // Row 1 of 3 of stone
+        'dist/images/stone-block.png', // Row 2 of 3 of stone
+        'dist/images/stone-block.png', // Row 3 of 3 of stone
+        'dist/images/grass-block.png', // Row 1 of 2 of grass
+        'dist/images/grass-block.png'],
             numRows = 6,
             numCols = 5,
-            row, col;
+            row,
+            col;
 
         // Before drawing, clear existing canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
@@ -410,34 +403,26 @@ var Engine = (function (global) {
         popsUp = true;
         document.querySelector('.l-score').innerText = level;
         document.querySelector('.modal').classList.add('modal-show');
-        document.querySelector('i').addEventListener('click', (e) => {
+        document.querySelector('i').addEventListener('click', function (e) {
             level = 1;
             popsUp = false;
             player.x = 200;
             player.y = 400;
-            allEnemies =[];
+            allEnemies = [];
             allEnemies = [bug1, bug2, bug3];
-            allEnemies.forEach(element => {
+            allEnemies.forEach(function (element) {
                 element.x = -101;
             });
             document.querySelector('.modal').classList.remove('modal-show');
             document.querySelector('#lvl-count').innerText = level;
         });
-
     }
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
      */
-    Resources.load([
-        'dist/images/stone-block.png',
-        'dist/images/water-block.png',
-        'dist/images/grass-block.png',
-        'dist/images/enemy-bug.png',
-        'dist/images/char-boy.png',
-        'dist/images/enemy-bug.png'
-    ]);
+    Resources.load(['dist/images/stone-block.png', 'dist/images/water-block.png', 'dist/images/grass-block.png', 'dist/images/enemy-bug.png', 'dist/images/char-boy.png', 'dist/images/enemy-bug.png']);
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window
@@ -445,4 +430,4 @@ var Engine = (function (global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
-})(this);
+}(undefined);
