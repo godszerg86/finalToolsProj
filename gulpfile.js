@@ -1,9 +1,10 @@
 const gulp = require('gulp');
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
+const imagemin = require('gulp-imagemin');
 
 
-gulp.task('default', ['css']);
+gulp.task('default', ['css','images']);
 
 
 gulp.task('css', () =>
@@ -15,3 +16,9 @@ gulp.task('css', () =>
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(gulp.dest('./dist/css/'))
 );
+
+gulp.task('images', () =>{
+    gulp.src('src/images/**/*')
+        .pipe(imagemin())
+        .pipe(gulp.dest('dist/images'))
+});

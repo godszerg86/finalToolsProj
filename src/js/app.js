@@ -8,7 +8,7 @@ var Enemy = function (x, y, level) {
     this.x = x;
     this.y = y;
     this.speed = 50 + (Math.random() * level);
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = 'dist/images/enemy-bug.png';
 };
 
 // Update the enemy's position, required method for game
@@ -35,7 +35,7 @@ Enemy.prototype.render = function () {
 const Player = function () {
     this.x = 200;
     this.y = 400;
-    this.sprite = 'images/char-boy.png';
+    this.sprite = 'dist/images/char-boy.png';
 
     this.update = function (newX, newY) {
         if (!popsUp) {
