@@ -31,12 +31,12 @@ gulp.task('images', () => {
 
 gulp.task('js', () => {
     pump([
-        gulp.src(['./src/js/resources.js', './src/js/app.js', './src/js/engine.js']), 
+        gulp.src(['./src/js/resources.js', './src/js/app.js', './src/js/engine.js']),
         babel({
             presets: ['env']
-        }), 
-        concat('main.js'), 
-        uglify(), 
+        }),
+        concat('main.js'),
+        uglify(),
         gulp.dest('./dist/js/')
     ]);
 });
@@ -58,4 +58,16 @@ gulp.task('html', () => {
         }))
         .pipe(gulp.dest('dist/'));
 
+});
+
+gulp.task('cssMin', () => {
+    gulp.src('./src/css/**/*')
+        .pipe(cleanCSS({
+            compatibility: 'ie8'
+        }))
+        .pipe(gulp.dest('./dist/css/'))
+});
+
+gulp.task('watchCss', () => {
+    gulp.watch('./src/css/style.css', ['cssMin'])
 });
